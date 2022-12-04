@@ -1,7 +1,9 @@
-import { Modal, Box, Typography, Button } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import Book from '../type/book'
-import { checkoutBook, getBookById, checkInBook } from '../util/bookService'
+import React, { useEffect, useState } from 'react';
+import { Modal, Box, Typography, Button } from '@mui/material';
+import Book from '../type/book';
+import { checkoutBook, getBookById, checkInBook } from '../util/bookService';
+import { toast } from 'react-toastify';
+
 
 type propType = {
     bookId: string | undefined, 
@@ -29,14 +31,22 @@ const Model = ({ bookId = undefined, onClose = () => {} }: propType) => {
     }
 
     const checkout = async () => {
-        const res: boolean = await checkoutBook(bookId as string);
-        alert(`res: ${res}`);
+        const flag: boolean = await checkoutBook(bookId as string);
+        if (flag) {
+            toast.success("Successfully checked out!");
+        } else {
+            toast.error("Something wen't wrong!");
+        }
         onClose();
     }
 
     const checkIn = async () => {
-        const res: boolean = await checkInBook(bookId as string);
-        alert(`res: ${res}`);
+        const flag: boolean = await checkInBook(bookId as string);
+        if (flag) {
+            toast.success("Successfully checked in!");
+        } else {
+            toast.error("Something wen't wrong!");
+        }
         onClose();
     }
 
@@ -47,7 +57,6 @@ const Model = ({ bookId = undefined, onClose = () => {} }: propType) => {
     }, [bookId]);
 
     return (
-        <>
             <Modal
                 open={!!bookId}
                 onClose={()=> onClose()}
@@ -62,7 +71,6 @@ const Model = ({ bookId = undefined, onClose = () => {} }: propType) => {
                     <Button variant="outlined" onClick={checkout}>Check Out</Button>
                 </Box>
             </Modal>
-        </>
     )
 }
 

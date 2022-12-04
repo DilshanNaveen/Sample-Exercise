@@ -20,8 +20,14 @@ var books = []book{
 	{ID: "3", Title: "title 3", Author: "author 3", Quantity: 3},
 }
 
+func handleResponse(c *gin.Context, status int, response any) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS")
+	c.IndentedJSON(status, response)
+}
+
 func getBooks(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, books)
+	handleResponse(c, http.StatusOK, books)
 }
 
 func createNewBook(c *gin.Context) {
@@ -32,7 +38,7 @@ func createNewBook(c *gin.Context) {
 	}
 
 	books = append(books, newBook)
-	c.IndentedJSON(http.StatusCreated, newBook)
+	handleResponse(c, http.StatusCreated, newBook)
 }
 
 func getBookById(id string) (*book, error) {
@@ -50,52 +56,52 @@ func bookById(c *gin.Context) {
 	book, error := getBookById(id)
 
 	if error != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message: ": "Book not found"})
+		handleResponse(c, http.StatusNotFound, gin.H{"message: ": "Book not found"})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, book)
+	handleResponse(c, http.StatusOK, book)
 }
 
 func checkoutBook(c *gin.Context) {
 	id, isIdExist := c.GetQuery("id")
 
 	if !isIdExist {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Id is required"})
+		handleResponse(c, http.StatusBadRequest, gin.H{"message": "Id is required"})
 	}
 
 	book, err := getBookById(id)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message: ": "Book not found"})
+		handleResponse(c, http.StatusNotFound, gin.H{"message: ": "Book not found"})
 		return
 	}
 
 	if book.Quantity <= 0 {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message: ": "Book not available"})
+		handleResponse(c, http.StatusBadRequest, gin.H{"message: ": "Book not available"})
 		return
 	}
 
 	book.Quantity -= 1
-	c.IndentedJSON(http.StatusOK, book)
+	handleResponse(c, http.StatusOK, book)
 }
 
-func returnBook(c *gin.Context) {
+func checkIn(c *gin.Context) {
 	id, isIdExist := c.GetQuery("id")
 
 	if !isIdExist {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Id is required"})
+		handleResponse(c, http.StatusBadRequest, gin.H{"message": "Id is required"})
 	}
 
 	book, err := getBookById(id)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message: ": "Book not found"})
+		handleResponse(c, http.StatusNotFound, gin.H{"message: ": "Book not found"})
 		return
 	}
 
 	book.Quantity += 1
-	c.IndentedJSON(http.StatusOK, book)
+	handleResponse(c, http.StatusOK, book)
 }
 
 func main() {
@@ -104,8 +110,8 @@ func main() {
 	router.GET("/books", getBooks)
 	router.GET("/book/:id", bookById)
 	router.POST("/book", createNewBook)
-	router.PATCH("/checkout", checkoutBook)
-	router.PATCH("/return", returnBook)
+	router.GET("/checkout", checkoutBook)
+	router.GET("/check-in", checkIn)
 
 	router.Run(":8080")
 }

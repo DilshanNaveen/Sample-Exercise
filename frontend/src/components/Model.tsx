@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Box, Typography, Button } from '@mui/material';
+import { Modal, Box, Typography, Button, Grid, Paper } from '@mui/material';
 import Book from '../type/book';
 import { checkoutBook, getBookById, checkInBook } from '../util/bookService';
 import { toast } from 'react-toastify';
-
 
 type propType = {
     bookId: string | undefined, 
@@ -67,8 +66,15 @@ const Model = ({ bookId = undefined, onClose = () => {} }: propType) => {
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                         Book Title: {book?.Title}
                     </Typography>
-                    <Button variant="contained" onClick={checkIn}>Check In</Button>
-                    <Button variant="outlined" onClick={checkout}>Check Out</Button>
+                    <br />
+                    <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                            <Button variant="contained" onClick={checkIn} fullWidth>Check In</Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button variant="outlined" onClick={checkout} fullWidth>Check Out</Button> 
+                        </Grid>
+                    </Grid>
                 </Box>
             </Modal>
     )

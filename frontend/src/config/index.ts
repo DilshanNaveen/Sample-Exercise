@@ -1,1 +1,1 @@
-export const SERVER_URL: string = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+export const SERVER_URL: string = "http://10.100.16.18:8080";

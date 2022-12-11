@@ -1,1 +1,1 @@
-export const SERVER_URL: string = "http://10.100.16.18:8080";
+export const SERVER_URL: string = "/api";
